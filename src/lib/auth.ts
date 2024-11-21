@@ -10,37 +10,38 @@ import { hash, compare } from "bcrypt";
 export const { auth, handlers } = NextAuth({
   adapter: PrismaAdapter(db),
   providers: [
-    Credentials({
-      // You can specify which fields should be submitted, by adding keys to the `credentials` object.
-      // e.g. domain, username, password, 2FA token, etc.
-      authorize: async (credentials) => {
-        let user = null;
+    // Credentials({
+    //   id: "credentials",
+    //   name: "Credentials",
 
-        // logic to salt and hash password
-        const pwdHashedSaled = saltAndHashPassword(credentials?.password ?? "");
+    //   authorize: async (credentials) => {
+    //     // logic to salt and hash password
+    //     const pwdHashedSaled = saltAndHashPassword(credentials?.password ?? "");
 
-        // logic to verify if the user exists
-        user = await getUserFromDb(
-          credentials?.email ?? "",
-          await pwdHashedSaled
-        );
+    //     // logic to verify if the user exists
+    //     const user = await getUserFromDb(
+    //       credentials?.email ?? "",
+    //       await pwdHashedSaled
+    //     );
 
-        if (!user) {
-          // No user found, so this is their first attempt to login
-          // Optionally, this is also the place you could do a user registration
-          throw new Error("Invalid credentials.");
-        }
+    //     // logic to verify if the user is active
+    //     if (!user) {
+    //       // No user found, so this is their first attempt to login
+    //       // Optionally, this is also the place you could do a user registration
+    //       throw new Error("Invalid credentials.");
+    //     }
 
-        // return user object with their profile data
-        return user;
-      },
-      credentials: {
-        email: {},
-        password: {},
-      },
-    }),
+    //     // return user object with their profile data
+    //     return user;
+    //   },
+    //   credentials: {
+    //     email: {},
+    //     password: {},
+    //   },
+    // }),
   ],
 });
+
 const prisma = new PrismaClient();
 
 async function getUserFromDb(email: string, pwHash: string) {
@@ -68,3 +69,5 @@ async function saltAndHashPassword(password: string) {
     return "";
   }
 }
+
+export default auth;
